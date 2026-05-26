@@ -475,8 +475,6 @@ a {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
   -webkit-user-drag: none;
 }
 

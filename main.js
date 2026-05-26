@@ -4,8 +4,8 @@ const root = document.documentElement;
 const toastStack = document.querySelector('.toast-stack');
 const searchInput = document.getElementById('search-input');
 const focusPill = document.querySelector('.hero .pill');
-const TOAST_FADEOUT_START_DELAY = 2400;
-const TOAST_DOM_REMOVAL_DELAY = 2800;
+const TOAST_FADEOUT_DELAY_MS = 2400;
+const TOAST_REMOVAL_DELAY_MS = 2800;
 
 const formatLabel = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -39,10 +39,10 @@ const showToast = (message) => {
   toastStack.appendChild(toast);
   setTimeout(() => {
     toast.classList.add('is-hiding');
-  }, TOAST_FADEOUT_START_DELAY);
+  }, TOAST_FADEOUT_DELAY_MS);
   setTimeout(() => {
     toast.remove();
-  }, TOAST_DOM_REMOVAL_DELAY);
+  }, TOAST_REMOVAL_DELAY_MS);
 };
 
 const integrationState = (() => {
@@ -192,7 +192,7 @@ chartBars.forEach((bar) => {
   });
 });
 
-const MUSIC_FEED_URL = 'https://itunes.apple.com/us/rss/topsongs/limit=8/xml';
+const MUSIC_FEED_URL = 'https://itunes.apple.com/us/rss/topsongs/limit=6/xml';
 const musicList = document.getElementById('music-list');
 const musicStatus = document.getElementById('music-status');
 const fallbackTracks = [
@@ -239,18 +239,20 @@ const setMusicStatus = (message) => {
   }
 };
 
-const parseFeed = (xml) => {
-  const entries = Array.from(xml.querySelectorAll('entry')).slice(0, 6);
-  return entries.map((entry) => {
+const ITUNES_NAMESPACE = 'http://itunes.apple.com/rss';
+
+const readNamespaceValue = (entry, tagName) =>
+  entry.getElementsByTagNameNS(ITUNES_NAMESPACE, tagName)[0]?.textContent;
+
+const parseFeed = (xml) =>
+  Array.from(xml.querySelectorAll('entry')).map((entry) => {
     const title =
-      entry.querySelector('im\\:name')?.textContent ||
-      entry.querySelector('title')?.textContent ||
-      'Unknown track';
-    const artist = entry.querySelector('im\\:artist')?.textContent || 'Unknown artist';
+      readNamespaceValue(entry, 'name') || entry.querySelector('title')?.textContent || 'Unknown track';
+    const artist =
+      readNamespaceValue(entry, 'artist') || entry.querySelector('artist')?.textContent || 'Unknown artist';
     const url = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || '';
     return { title, artist, url };
   });
-};
 
 const fetchMusicFeed = async (announce = false) => {
   if (!musicList) {
@@ -366,11 +368,12 @@ if (searchInput) {
         showToast('Start typing to search.');
         return;
       }
-      const results = highlightMatches(query);
+      const safeQuery = query.replace(/[<>]/g, '');
+      const results = highlightMatches(safeQuery);
       showToast(
         results
           ? `${results} match${results === 1 ? '' : 'es'} highlighted.`
-          : `No matches for "${query}".`
+          : `No matches for "${safeQuery}".`
       );
     }
   });
