@@ -4,6 +4,10 @@ const root = document.documentElement;
 const toastStack = document.querySelector('.toast-stack');
 const searchInput = document.getElementById('search-input');
 const focusPill = document.querySelector('.hero .pill');
+const TOAST_HIDE_DELAY = 2400;
+const TOAST_REMOVE_DELAY = 2800;
+
+const formatLabel = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
 const updateDateTime = () => {
   const now = new Date();
@@ -35,10 +39,10 @@ const showToast = (message) => {
   toastStack.appendChild(toast);
   setTimeout(() => {
     toast.classList.add('is-hiding');
-  }, 2400);
+  }, TOAST_HIDE_DELAY);
   setTimeout(() => {
     toast.remove();
-  }, 2800);
+  }, TOAST_REMOVE_DELAY);
 };
 
 const themeButtons = document.querySelectorAll('[data-theme]');
@@ -72,7 +76,7 @@ const applyAccent = (accent, announce = false) => {
   updateToggleButtons(accentButtons, accent, 'accent');
   localStorage.setItem('accent', accent);
   if (announce) {
-    showToast(`${accent.charAt(0).toUpperCase() + accent.slice(1)} accent enabled.`);
+    showToast(`${formatLabel(accent)} accent enabled.`);
   }
 };
 
@@ -149,7 +153,7 @@ const highlightBar = (bar) => {
   chartBars.forEach((entry) => entry.classList.remove('is-active'));
   bar.classList.add('is-active');
   const day = bar.dataset.day || 'Today';
-  const value = bar.dataset.value || bar.style.height.replace('%', '');
+  const value = bar.dataset.value || '0';
   if (chartNote) {
     chartNote.textContent = `${day} · ${value}% activity`;
   }

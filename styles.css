@@ -21,6 +21,7 @@
   --accent-gradient: linear-gradient(135deg, var(--accent), var(--accent-strong));
   --shadow: 0 24px 50px rgba(15, 23, 42, 0.14);
   --radius: 24px;
+  --transition-duration: 0.3s;
 }
 
 :root[data-theme='dark'] {
@@ -77,7 +78,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   letter-spacing: -0.01em;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
 }
 
 a {
@@ -94,7 +95,7 @@ a {
     radial-gradient(circle at 80% 20%, var(--bg-radial-3), transparent 30%),
     linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 40%, var(--bg-gradient-3) 100%);
   z-index: 0;
-  transition: background 0.3s ease;
+  transition: background var(--transition-duration) ease;
 }
 
 .app {
@@ -114,7 +115,8 @@ a {
   box-shadow: var(--shadow);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background var(--transition-duration) ease, border-color var(--transition-duration) ease,
+    box-shadow var(--transition-duration) ease;
 }
 
 .sidebar {
@@ -765,7 +767,7 @@ a {
 .toast.is-hiding {
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
 }
 
 .toast strong {
