@@ -9,17 +9,19 @@ const TOAST_REMOVAL_DELAY_MS = 2800;
 
 const formatLabel = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 const DEFAULT_INTEGRATION_NAME = 'Integration';
+const DEFAULT_LOCALE = 'en-US';
+const SEARCH_HIGHLIGHT_DURATION_MS = 1600;
 
 const updateDateTime = () => {
   const now = new Date();
   if (clock) {
-    clock.textContent = now.toLocaleTimeString([], {
+    clock.textContent = now.toLocaleTimeString(DEFAULT_LOCALE, {
       hour: '2-digit',
       minute: '2-digit'
     });
   }
   if (dateLabel) {
-    dateLabel.textContent = now.toLocaleDateString([], {
+    dateLabel.textContent = now.toLocaleDateString(DEFAULT_LOCALE, {
       weekday: 'long',
       month: 'long',
       day: 'numeric'
@@ -286,7 +288,7 @@ const fetchMusicFeed = async (announce = false) => {
       throw new Error('No tracks found');
     }
     renderMusicList(tracks);
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timestamp = new Date().toLocaleTimeString(DEFAULT_LOCALE, { hour: '2-digit', minute: '2-digit' });
     setMusicStatus(`Updated ${timestamp}`);
     if (announce) {
       showToast('Trending music refreshed.');
@@ -369,7 +371,7 @@ const highlightMatches = (query) => {
   if (matches.length) {
     setTimeout(() => {
       matches.forEach((target) => target.classList.remove('text-highlight'));
-    }, 1600);
+    }, SEARCH_HIGHLIGHT_DURATION_MS);
   }
   return matches.length;
 };
@@ -383,12 +385,11 @@ if (searchInput) {
         showToast('Start typing to search.');
         return;
       }
-      const safeQuery = query.replace(/[<>]/g, '');
-      const results = highlightMatches(safeQuery);
+      const results = highlightMatches(query);
       showToast(
         results
           ? `${results} match${results === 1 ? '' : 'es'} highlighted.`
-          : `No matches for "${safeQuery}".`
+          : `No matches for "${query}".`
       );
     }
   });
