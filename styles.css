@@ -477,7 +477,6 @@ a {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none;
   -webkit-user-drag: none;
 }
 
@@ -687,6 +686,39 @@ a {
 .swatch:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.music-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.music-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.music-link {
+  font-weight: 600;
+  color: inherit;
+}
+
+.text-highlight {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 2px 6px;
+  box-decoration-break: clone;
 }
 
 .toggle-row,

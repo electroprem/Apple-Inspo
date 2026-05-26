@@ -191,7 +191,7 @@
                   <p class="meta">Gently nudges every hour</p>
                 </div>
                 <label class="toggle">
-                  <input type="checkbox" checked />
+                  <input type="checkbox" data-label="Focus reminders" checked />
                   <span></span>
                 </label>
               </div>
@@ -201,7 +201,7 @@
                   <p class="meta">Soft ocean mix</p>
                 </div>
                 <label class="toggle">
-                  <input type="checkbox" />
+                  <input type="checkbox" data-label="Ambient sound" />
                   <span></span>
                 </label>
               </div>
@@ -324,6 +324,26 @@
                   Connect
                 </button>
               </div>
+            </article>
+
+            <article class="widget glass trending-widget">
+              <div class="widget-header">
+                <div>
+                  <h4>Trending music</h4>
+                  <p class="meta">Live from Apple Music RSS</p>
+                </div>
+                <button class="ghost small" data-action="refresh-music">Refresh</button>
+              </div>
+              <div class="music-list" id="music-list">
+                <div class="music-item">
+                  <div>
+                    <p class="item-title">Loading chart data</p>
+                    <p class="meta">Fetching the latest feed</p>
+                  </div>
+                  <span class="pill">#1</span>
+                </div>
+              </div>
+              <p class="meta" id="music-status">Awaiting feed update</p>
             </article>
           </aside>
         </section>

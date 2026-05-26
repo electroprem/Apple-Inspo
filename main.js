@@ -4,8 +4,8 @@ const root = document.documentElement;
 const toastStack = document.querySelector('.toast-stack');
 const searchInput = document.getElementById('search-input');
 const focusPill = document.querySelector('.hero .pill');
-const TOAST_HIDE_DELAY = 2400;
-const TOAST_REMOVE_DELAY = 2800;
+const TOAST_FADEOUT_START_DELAY = 2400;
+const TOAST_DOM_REMOVAL_DELAY = 2800;
 
 const formatLabel = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -39,11 +39,34 @@ const showToast = (message) => {
   toastStack.appendChild(toast);
   setTimeout(() => {
     toast.classList.add('is-hiding');
-  }, TOAST_HIDE_DELAY);
+  }, TOAST_FADEOUT_START_DELAY);
   setTimeout(() => {
     toast.remove();
-  }, TOAST_REMOVE_DELAY);
+  }, TOAST_DOM_REMOVAL_DELAY);
 };
+
+const integrationState = (() => {
+  try {
+    return JSON.parse(localStorage.getItem('integrations')) || {};
+  } catch (error) {
+    return {};
+  }
+})();
+
+const integrationButtons = document.querySelectorAll('[data-action="integration"]');
+
+const setIntegrationState = (button, isConnected) => {
+  button.classList.toggle('is-connected', isConnected);
+  button.textContent = isConnected ? 'Connected' : 'Connect';
+  button.setAttribute('aria-pressed', String(isConnected));
+};
+
+integrationButtons.forEach((button) => {
+  const key = button.dataset.integration || 'Integration';
+  if (integrationState[key]) {
+    setIntegrationState(button, true);
+  }
+});
 
 const themeButtons = document.querySelectorAll('[data-theme]');
 const accentButtons = document.querySelectorAll('[data-accent]');
@@ -169,10 +192,106 @@ chartBars.forEach((bar) => {
   });
 });
 
+const MUSIC_FEED_URL = 'https://itunes.apple.com/us/rss/topsongs/limit=8/xml';
+const musicList = document.getElementById('music-list');
+const musicStatus = document.getElementById('music-status');
+const fallbackTracks = [
+  { title: 'Starlight Avenue', artist: 'Luna Park' },
+  { title: 'Golden Hour', artist: 'Atlas Drive' },
+  { title: 'Neon Skies', artist: 'Aurora Lane' },
+  { title: 'Cloudline', artist: 'Echo North' },
+  { title: 'Bloom', artist: 'Riverstone' },
+  { title: 'Velvet Run', artist: 'Nova & Co.' }
+];
+
+const renderMusicList = (tracks) => {
+  if (!musicList) {
+    return;
+  }
+  musicList.innerHTML = '';
+  tracks.forEach((track, index) => {
+    const item = document.createElement('div');
+    item.className = 'music-item';
+    const textWrap = document.createElement('div');
+    const titleEl = track.url ? document.createElement('a') : document.createElement('span');
+    titleEl.className = 'item-title music-link';
+    titleEl.textContent = track.title;
+    if (track.url) {
+      titleEl.href = track.url;
+      titleEl.target = '_blank';
+      titleEl.rel = 'noopener';
+    }
+    const artistEl = document.createElement('p');
+    artistEl.className = 'meta';
+    artistEl.textContent = track.artist;
+    textWrap.append(titleEl, artistEl);
+    const rank = document.createElement('span');
+    rank.className = 'pill';
+    rank.textContent = `#${index + 1}`;
+    item.append(textWrap, rank);
+    musicList.append(item);
+  });
+};
+
+const setMusicStatus = (message) => {
+  if (musicStatus) {
+    musicStatus.textContent = message;
+  }
+};
+
+const parseFeed = (xml) => {
+  const entries = Array.from(xml.querySelectorAll('entry')).slice(0, 6);
+  return entries.map((entry) => {
+    const title =
+      entry.querySelector('im\\:name')?.textContent ||
+      entry.querySelector('title')?.textContent ||
+      'Unknown track';
+    const artist = entry.querySelector('im\\:artist')?.textContent || 'Unknown artist';
+    const url = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || '';
+    return { title, artist, url };
+  });
+};
+
+const fetchMusicFeed = async (announce = false) => {
+  if (!musicList) {
+    return;
+  }
+  setMusicStatus('Fetching RSS feed...');
+  try {
+    const response = await fetch(MUSIC_FEED_URL);
+    if (!response.ok) {
+      throw new Error('Feed request failed');
+    }
+    const text = await response.text();
+    const xml = new DOMParser().parseFromString(text, 'text/xml');
+    const tracks = parseFeed(xml);
+    if (!tracks.length) {
+      throw new Error('No tracks found');
+    }
+    renderMusicList(tracks);
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setMusicStatus(`Updated ${timestamp}`);
+    if (announce) {
+      showToast('Trending music refreshed.');
+    }
+  } catch (error) {
+    renderMusicList(fallbackTracks);
+    setMusicStatus('Unable to load feed. Showing saved picks.');
+    if (announce) {
+      showToast('Music feed unavailable right now.');
+    }
+  }
+};
+
+fetchMusicFeed();
+
 const toggleInputs = document.querySelectorAll('.toggle input');
 toggleInputs.forEach((input) => {
   input.addEventListener('change', () => {
-    const label = input.closest('.toggle-row')?.querySelector('.item-title')?.textContent || 'Setting';
+    const label =
+      input.dataset.label ||
+      input.closest('.toggle-row')?.querySelector('.item-title')?.textContent ||
+      'Setting';
     showToast(`${label} ${input.checked ? 'enabled' : 'paused'}.`);
   });
 });
@@ -189,11 +308,16 @@ const actionButtons = document.querySelectorAll('[data-action]');
 actionButtons.forEach((button) => {
   button.addEventListener('click', () => {
     const action = button.dataset.action;
+    if (action === 'refresh-music') {
+      fetchMusicFeed(true);
+      return;
+    }
     if (action === 'integration') {
       const integration = button.dataset.integration || 'Integration';
-      const isConnected = button.classList.toggle('is-connected');
-      button.textContent = isConnected ? 'Connected' : 'Connect';
-      button.setAttribute('aria-pressed', String(isConnected));
+      const isConnected = !button.classList.contains('is-connected');
+      setIntegrationState(button, isConnected);
+      integrationState[integration] = isConnected;
+      localStorage.setItem('integrations', JSON.stringify(integrationState));
       showToast(`${integration} ${isConnected ? 'connected' : 'disconnected'}.`);
       return;
     }
@@ -215,12 +339,39 @@ actionButtons.forEach((button) => {
   });
 });
 
+const highlightMatches = (query) => {
+  const matches = [];
+  const normalized = query.toLowerCase();
+  const targets = document.querySelectorAll('.card h4, .item-title, .music-link');
+  targets.forEach((target) => {
+    if (target.textContent.toLowerCase().includes(normalized)) {
+      target.classList.add('text-highlight');
+      matches.push(target);
+    }
+  });
+  if (matches.length) {
+    setTimeout(() => {
+      matches.forEach((target) => target.classList.remove('text-highlight'));
+    }, 1600);
+  }
+  return matches.length;
+};
+
 if (searchInput) {
   searchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       const query = searchInput.value.trim();
-      showToast(query ? `Searching for "${query}".` : 'Start typing to search.');
+      if (!query) {
+        showToast('Start typing to search.');
+        return;
+      }
+      const results = highlightMatches(query);
+      showToast(
+        results
+          ? `${results} match${results === 1 ? '' : 'es'} highlighted.`
+          : `No matches for "${query}".`
+      );
     }
   });
 }
