@@ -8,6 +8,7 @@ const TOAST_FADEOUT_DELAY_MS = 2400;
 const TOAST_REMOVAL_DELAY_MS = 2800;
 
 const formatLabel = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+const DEFAULT_INTEGRATION_NAME = 'Integration';
 
 const updateDateTime = () => {
   const now = new Date();
@@ -62,7 +63,7 @@ const setIntegrationState = (button, isConnected) => {
 };
 
 integrationButtons.forEach((button) => {
-  const key = button.dataset.integration || 'Integration';
+  const key = button.dataset.integration || DEFAULT_INTEGRATION_NAME;
   if (integrationState[key]) {
     setIntegrationState(button, true);
   }
@@ -193,6 +194,7 @@ chartBars.forEach((bar) => {
 });
 
 const MUSIC_FEED_URL = 'https://itunes.apple.com/us/rss/topsongs/limit=6/xml';
+const CORS_PROXY_URL = 'https://api.allorigins.win/raw?url=';
 const musicList = document.getElementById('music-list');
 const musicStatus = document.getElementById('music-status');
 const fallbackTracks = [
@@ -241,18 +243,30 @@ const setMusicStatus = (message) => {
 
 const ITUNES_NAMESPACE = 'http://itunes.apple.com/rss';
 
-const readNamespaceValue = (entry, tagName) =>
+const readItunesNamespaceValue = (entry, tagName) =>
   entry.getElementsByTagNameNS(ITUNES_NAMESPACE, tagName)[0]?.textContent;
 
 const parseFeed = (xml) =>
   Array.from(xml.querySelectorAll('entry')).map((entry) => {
     const title =
-      readNamespaceValue(entry, 'name') || entry.querySelector('title')?.textContent || 'Unknown track';
+      readItunesNamespaceValue(entry, 'name') ||
+      entry.querySelector('title')?.textContent ||
+      'Unknown track';
     const artist =
-      readNamespaceValue(entry, 'artist') || entry.querySelector('artist')?.textContent || 'Unknown artist';
+      readItunesNamespaceValue(entry, 'artist') ||
+      entry.querySelector('artist')?.textContent ||
+      'Unknown artist';
     const url = entry.querySelector('link[rel="alternate"]')?.getAttribute('href') || '';
     return { title, artist, url };
   });
+
+const fetchFeedText = async (url) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Feed request failed');
+  }
+  return response.text();
+};
 
 const fetchMusicFeed = async (announce = false) => {
   if (!musicList) {
@@ -260,11 +274,12 @@ const fetchMusicFeed = async (announce = false) => {
   }
   setMusicStatus('Fetching RSS feed...');
   try {
-    const response = await fetch(MUSIC_FEED_URL);
-    if (!response.ok) {
-      throw new Error('Feed request failed');
+    let text;
+    try {
+      text = await fetchFeedText(MUSIC_FEED_URL);
+    } catch (error) {
+      text = await fetchFeedText(`${CORS_PROXY_URL}${encodeURIComponent(MUSIC_FEED_URL)}`);
     }
-    const text = await response.text();
     const xml = new DOMParser().parseFromString(text, 'text/xml');
     const tracks = parseFeed(xml);
     if (!tracks.length) {
@@ -315,7 +330,7 @@ actionButtons.forEach((button) => {
       return;
     }
     if (action === 'integration') {
-      const integration = button.dataset.integration || 'Integration';
+      const integration = button.dataset.integration || DEFAULT_INTEGRATION_NAME;
       const isConnected = !button.classList.contains('is-connected');
       setIntegrationState(button, isConnected);
       integrationState[integration] = isConnected;
