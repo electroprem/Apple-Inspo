@@ -18,15 +18,15 @@
           </div>
         </div>
         <nav class="nav">
-          <a class="nav-item active" href="#">
+          <a class="nav-item active" data-nav="Dashboard" href="#">
             Dashboard
             <span class="badge">2</span>
           </a>
-          <a class="nav-item" href="#">Insights</a>
-          <a class="nav-item" href="#">Projects</a>
-          <a class="nav-item" href="#">Calendar</a>
-          <a class="nav-item" href="#">Messages</a>
-          <a class="nav-item" href="#">Settings</a>
+          <a class="nav-item" data-nav="Insights" href="#">Insights</a>
+          <a class="nav-item" data-nav="Projects" href="#">Projects</a>
+          <a class="nav-item" data-nav="Calendar" href="#">Calendar</a>
+          <a class="nav-item" data-nav="Messages" href="#">Messages</a>
+          <a class="nav-item" data-nav="Settings" href="#">Settings</a>
         </nav>
         <div class="sidebar-footer glass">
           <div class="storage">
@@ -49,9 +49,9 @@
             <div class="clock" id="clock"></div>
             <label class="search">
               <span class="search-icon">⌘K</span>
-              <input type="text" placeholder="Search" />
+              <input id="search-input" type="text" placeholder="Search" />
             </label>
-            <button class="icon-button" aria-label="Notifications">
+            <button class="icon-button" data-action="notifications" aria-label="Notifications">
               <span class="dot"></span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -70,8 +70,8 @@
             <h3>Design sprint status</h3>
             <p>You're 82% through today's plan. Keep the momentum and ship before 5 PM.</p>
             <div class="hero-actions">
-              <button class="primary">Resume sprint</button>
-              <button class="ghost">Share update</button>
+              <button class="primary" data-action="resume-sprint">Resume sprint</button>
+              <button class="ghost" data-action="share-update">Share update</button>
             </div>
           </div>
           <div class="hero-metrics">
@@ -91,7 +91,7 @@
         <section class="content-grid">
           <div class="left-column">
             <div class="card-grid">
-              <article class="card glass">
+              <article class="card glass" data-card tabindex="0" draggable="false">
                 <h4>Weekly revenue</h4>
                 <p class="value">$42.6k</p>
                 <div class="spark">
@@ -99,7 +99,7 @@
                 </div>
                 <p class="meta">Up 12% from last week</p>
               </article>
-              <article class="card glass">
+              <article class="card glass" data-card tabindex="0" draggable="false">
                 <h4>Active users</h4>
                 <p class="value">18.2k</p>
                 <div class="spark">
@@ -107,13 +107,29 @@
                 </div>
                 <p class="meta">Peak at 3:45 PM</p>
               </article>
-              <article class="card glass">
+              <article class="card glass" data-card tabindex="0" draggable="false">
                 <h4>Completion</h4>
                 <p class="value">86%</p>
                 <div class="spark">
                   <span style="width: 86%"></span>
                 </div>
                 <p class="meta">On track for Q3</p>
+              </article>
+              <article class="card glass" data-card tabindex="0" draggable="false">
+                <h4>Net retention</h4>
+                <p class="value">114%</p>
+                <div class="spark">
+                  <span style="width: 74%"></span>
+                </div>
+                <p class="meta">Renewals plus expansion</p>
+              </article>
+              <article class="card glass" data-card tabindex="0" draggable="false">
+                <h4>New leads</h4>
+                <p class="value">326</p>
+                <div class="spark">
+                  <span style="width: 61%"></span>
+                </div>
+                <p class="meta">37% from referrals</p>
               </article>
             </div>
 
@@ -123,17 +139,20 @@
                   <h4>Daily activity</h4>
                   <p class="meta">Subtle momentum across sessions</p>
                 </div>
-                <button class="ghost small">View report</button>
+                <div class="chart-actions">
+                  <span class="chart-note" id="chart-note">Tap a bar for details</span>
+                  <button class="ghost small" data-action="view-report">View report</button>
+                </div>
               </div>
               <div class="chart-bars">
-                <div class="bar" style="height: 48%"></div>
-                <div class="bar" style="height: 62%"></div>
-                <div class="bar" style="height: 45%"></div>
-                <div class="bar" style="height: 78%"></div>
-                <div class="bar" style="height: 58%"></div>
-                <div class="bar" style="height: 88%"></div>
-                <div class="bar" style="height: 68%"></div>
-                <div class="bar" style="height: 52%"></div>
+                <div class="bar" data-day="Mon" data-value="48" tabindex="0" style="height: 48%"></div>
+                <div class="bar" data-day="Tue" data-value="62" tabindex="0" style="height: 62%"></div>
+                <div class="bar" data-day="Wed" data-value="45" tabindex="0" style="height: 45%"></div>
+                <div class="bar" data-day="Thu" data-value="78" tabindex="0" style="height: 78%"></div>
+                <div class="bar" data-day="Fri" data-value="58" tabindex="0" style="height: 58%"></div>
+                <div class="bar" data-day="Sat" data-value="88" tabindex="0" style="height: 88%"></div>
+                <div class="bar" data-day="Sun" data-value="68" tabindex="0" style="height: 68%"></div>
+                <div class="bar" data-day="Next Mon" data-value="52" tabindex="0" style="height: 52%"></div>
               </div>
             </article>
 
@@ -188,6 +207,19 @@
               </div>
             </article>
 
+            <article class="widget glass focus-widget">
+              <h4>Focus lens</h4>
+              <p class="meta" id="focus-note">Select a metric card to reveal deeper context.</p>
+              <div class="focus-details">
+                <div>
+                  <p class="item-title" id="focus-title">No card selected</p>
+                  <p class="meta" id="focus-meta">Tap any card to surface its latest highlight.</p>
+                </div>
+                <span class="pill" id="focus-value">—</span>
+              </div>
+              <button class="ghost small" data-action="focus-pin">Pin focus</button>
+            </article>
+
             <article class="widget glass">
               <h4>Schedule</h4>
               <div class="schedule-item">
@@ -203,6 +235,45 @@
                   <p class="meta">Tomorrow · 10:00 AM</p>
                 </div>
                 <span class="pill">45 min</span>
+              </div>
+            </article>
+
+            <article class="widget glass theme-widget">
+              <h4>Theme studio</h4>
+              <div class="segmented" role="group" aria-label="Theme">
+                <button class="chip is-active" data-theme="light" aria-pressed="true">Light</button>
+                <button class="chip" data-theme="dark" aria-pressed="false">Dark</button>
+                <button class="chip" data-theme="auto" aria-pressed="false">Auto</button>
+              </div>
+              <div class="swatch-row" role="group" aria-label="Accent color">
+                <button
+                  class="swatch is-active"
+                  data-accent="blue"
+                  style="--swatch: #007aff"
+                  aria-label="Blue accent"
+                  aria-pressed="true"
+                ></button>
+                <button
+                  class="swatch"
+                  data-accent="violet"
+                  style="--swatch: #8b5cf6"
+                  aria-label="Violet accent"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  class="swatch"
+                  data-accent="teal"
+                  style="--swatch: #14b8a6"
+                  aria-label="Teal accent"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  class="swatch"
+                  data-accent="rose"
+                  style="--swatch: #f43f5e"
+                  aria-label="Rose accent"
+                  aria-pressed="false"
+                ></button>
               </div>
             </article>
 
@@ -223,10 +294,42 @@
                 <span class="status muted">Charging</span>
               </div>
             </article>
+
+            <article class="widget glass">
+              <h4>Integrations</h4>
+              <div class="integration-item">
+                <div>
+                  <p class="item-title">Figma</p>
+                  <p class="meta">Design file sync</p>
+                </div>
+                <button class="ghost small" data-action="integration" data-integration="Figma">
+                  Connect
+                </button>
+              </div>
+              <div class="integration-item">
+                <div>
+                  <p class="item-title">Slack</p>
+                  <p class="meta">Team updates and alerts</p>
+                </div>
+                <button class="ghost small" data-action="integration" data-integration="Slack">
+                  Connect
+                </button>
+              </div>
+              <div class="integration-item">
+                <div>
+                  <p class="item-title">Google Drive</p>
+                  <p class="meta">Asset archive</p>
+                </div>
+                <button class="ghost small" data-action="integration" data-integration="Drive">
+                  Connect
+                </button>
+              </div>
+            </article>
           </aside>
         </section>
       </main>
     </div>
+    <div class="toast-stack" aria-live="polite"></div>
     <script src="main.js"></script>
   </body>
 </html>
