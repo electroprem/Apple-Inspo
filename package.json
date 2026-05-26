@@ -1,0 +1,22 @@
+{
+  "name": "apple-inspo",
+  "version": "1.0.0",
+  "description": "Apple-inspired dashboard UI",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"No tests specified\""
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electroprem/Apple-Inspo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/electroprem/Apple-Inspo/issues"
+  },
+  "homepage": "https://github.com/electroprem/Apple-Inspo#readme"
+}

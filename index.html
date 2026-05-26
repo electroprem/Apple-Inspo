@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apple-Inspired Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background"></div>
+    <div class="app">
+      <aside class="sidebar glass">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <h1>Orbit</h1>
+            <span>Workspace</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <a class="nav-item active" href="#">
+            Dashboard
+            <span class="badge">2</span>
+          </a>
+          <a class="nav-item" href="#">Insights</a>
+          <a class="nav-item" href="#">Projects</a>
+          <a class="nav-item" href="#">Calendar</a>
+          <a class="nav-item" href="#">Messages</a>
+          <a class="nav-item" href="#">Settings</a>
+        </nav>
+        <div class="sidebar-footer glass">
+          <div class="storage">
+            <span>Storage</span>
+            <strong>74%</strong>
+          </div>
+          <div class="progress"><span></span></div>
+          <p>12.4 GB of 16 GB used</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar glass">
+          <div class="top-left">
+            <p class="eyebrow">Overview</p>
+            <h2>Good afternoon, Alex</h2>
+            <p class="subtitle" id="date"></p>
+          </div>
+          <div class="top-actions">
+            <div class="clock" id="clock"></div>
+            <label class="search">
+              <span class="search-icon">⌘K</span>
+              <input type="text" placeholder="Search" />
+            </label>
+            <button class="icon-button" aria-label="Notifications">
+              <span class="dot"></span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 3a6 6 0 0 0-6 6v3.5l-1.4 2.8a1 1 0 0 0 .9 1.4h13a1 1 0 0 0 .9-1.4L18 12.5V9a6 6 0 0 0-6-6Z"
+                />
+                <path d="M9.5 18a2.5 2.5 0 0 0 5 0" />
+              </svg>
+            </button>
+            <div class="avatar">A</div>
+          </div>
+        </header>
+
+        <section class="hero glass">
+          <div class="hero-copy">
+            <span class="pill">Focus mode</span>
+            <h3>Design sprint status</h3>
+            <p>You're 82% through today's plan. Keep the momentum and ship before 5 PM.</p>
+            <div class="hero-actions">
+              <button class="primary">Resume sprint</button>
+              <button class="ghost">Share update</button>
+            </div>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric">
+              <span>Time blocked</span>
+              <strong>4h 35m</strong>
+              <small>+18% vs yesterday</small>
+            </div>
+            <div class="metric">
+              <span>Flow score</span>
+              <strong>92</strong>
+              <small>High focus</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="left-column">
+            <div class="card-grid">
+              <article class="card glass">
+                <h4>Weekly revenue</h4>
+                <p class="value">$42.6k</p>
+                <div class="spark">
+                  <span style="width: 68%"></span>
+                </div>
+                <p class="meta">Up 12% from last week</p>
+              </article>
+              <article class="card glass">
+                <h4>Active users</h4>
+                <p class="value">18.2k</p>
+                <div class="spark">
+                  <span style="width: 54%"></span>
+                </div>
+                <p class="meta">Peak at 3:45 PM</p>
+              </article>
+              <article class="card glass">
+                <h4>Completion</h4>
+                <p class="value">86%</p>
+                <div class="spark">
+                  <span style="width: 86%"></span>
+                </div>
+                <p class="meta">On track for Q3</p>
+              </article>
+            </div>
+
+            <article class="chart glass">
+              <div class="chart-header">
+                <div>
+                  <h4>Daily activity</h4>
+                  <p class="meta">Subtle momentum across sessions</p>
+                </div>
+                <button class="ghost small">View report</button>
+              </div>
+              <div class="chart-bars">
+                <div class="bar" style="height: 48%"></div>
+                <div class="bar" style="height: 62%"></div>
+                <div class="bar" style="height: 45%"></div>
+                <div class="bar" style="height: 78%"></div>
+                <div class="bar" style="height: 58%"></div>
+                <div class="bar" style="height: 88%"></div>
+                <div class="bar" style="height: 68%"></div>
+                <div class="bar" style="height: 52%"></div>
+              </div>
+            </article>
+
+            <article class="list glass">
+              <h4>Recent activity</h4>
+              <div class="list-item">
+                <div>
+                  <p class="item-title">Marketing preview delivered</p>
+                  <p class="meta">2 hours ago · Updated by Erin</p>
+                </div>
+                <span class="status">Approved</span>
+              </div>
+              <div class="list-item">
+                <div>
+                  <p class="item-title">Prototype v3 shared</p>
+                  <p class="meta">Today · Shared with Product</p>
+                </div>
+                <span class="status muted">In review</span>
+              </div>
+              <div class="list-item">
+                <div>
+                  <p class="item-title">New onboarding flow</p>
+                  <p class="meta">Yesterday · Feedback received</p>
+                </div>
+                <span class="status">Live</span>
+              </div>
+            </article>
+          </div>
+
+          <aside class="right-column">
+            <article class="widget glass">
+              <h4>Quick actions</h4>
+              <div class="toggle-row">
+                <div>
+                  <p class="item-title">Focus reminders</p>
+                  <p class="meta">Gently nudges every hour</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <p class="item-title">Ambient sound</p>
+                  <p class="meta">Soft ocean mix</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </article>
+
+            <article class="widget glass">
+              <h4>Schedule</h4>
+              <div class="schedule-item">
+                <div>
+                  <p class="item-title">Design review</p>
+                  <p class="meta">Today · 3:30 PM</p>
+                </div>
+                <span class="pill">30 min</span>
+              </div>
+              <div class="schedule-item">
+                <div>
+                  <p class="item-title">Client sync</p>
+                  <p class="meta">Tomorrow · 10:00 AM</p>
+                </div>
+                <span class="pill">45 min</span>
+              </div>
+            </article>
+
+            <article class="widget glass">
+              <h4>Devices</h4>
+              <div class="device">
+                <div>
+                  <p class="item-title">MacBook Pro</p>
+                  <p class="meta">Battery 84%</p>
+                </div>
+                <span class="status">Online</span>
+              </div>
+              <div class="device">
+                <div>
+                  <p class="item-title">iPhone 15</p>
+                  <p class="meta">Battery 62%</p>
+                </div>
+                <span class="status muted">Charging</span>
+              </div>
+            </article>
+          </aside>
+        </section>
+      </main>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
