@@ -19,4 +19,4 @@ const updateDateTime = () => {
 };
 
 updateDateTime();
-setInterval(updateDateTime, 30000);
+setInterval(updateDateTime, 1000);
